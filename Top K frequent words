@@ -1,0 +1,38 @@
+import java.util.*;
+
+class Solution {
+    public List<String> topKFrequent(String[] words, int k) {
+        // Create a HashMap to store word frequencies
+        Map<String, Integer> wordCount = new HashMap<>();
+        
+        // Populate the HashMap
+        for (String word : words) {
+            wordCount.put(word, wordCount.getOrDefault(word, 0) + 1);
+        }
+        
+        // Create a PriorityQueue (Min Heap) based on custom comparator
+        PriorityQueue<String> minHeap = new PriorityQueue<>(
+            (w1, w2) -> wordCount.get(w1).equals(wordCount.get(w2)) ?
+                        w2.compareTo(w1) : wordCount.get(w1) - wordCount.get(w2)
+        );
+        
+        // Add words to the PriorityQueue
+        for (String word : wordCount.keySet()) {
+            minHeap.offer(word);
+            if (minHeap.size() > k) {
+                minHeap.poll();
+            }
+        }
+        
+        // Create a result list and add words from the PriorityQueue
+        List<String> result = new ArrayList<>();
+        while (!minHeap.isEmpty()) {
+            result.add(minHeap.poll());
+        }
+        
+        // Reverse the result list to get words in descending order of frequency
+        Collections.reverse(result);
+        
+        return result;
+    }
+}
